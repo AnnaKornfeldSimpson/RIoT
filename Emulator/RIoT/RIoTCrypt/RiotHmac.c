@@ -17,7 +17,7 @@
 //
 // 4-MAY-2015; RIoT adaptation (DennisMa;MSFT).
 //
-#include "RiotHmac.h"
+#include "include/RiotHmac.h"
 
 #pragma CHECKED_SCOPE ON
 
@@ -39,7 +39,7 @@ RIOT_HMAC_SHA256_Init(
     } else {
         // otherwise it's less than 64 and fits in opad.
         // TODO: Unsigned comparison, need dynamic bounds cast
-        memcpy(_Dynamic_bounds_cast<_Array_ptr<uint8_t>>(ctx->opad, byte_count(keyLen)), key, keyLen);
+        memcpy<uint8_t>(_Dynamic_bounds_cast<_Array_ptr<uint8_t>>(ctx->opad, byte_count(keyLen)), key, keyLen);
     }
     //
     // the HMAC_SHA256 process

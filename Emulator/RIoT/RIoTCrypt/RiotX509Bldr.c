@@ -115,15 +115,9 @@ Error:
 
 int
 X509GetDeviceCertTBS(
-<<<<<<< Updated upstream
-    DERBuilderContext   *Tbs,
-    RIOT_X509_TBS_DATA  *TbsData,
-    RIOT_ECC_PUBLIC     *DevIdKeyPub
-=======
     DERBuilderContext   *Tbs         : itype(_Ptr<DERBuilderContext>),
     RIOT_X509_TBS_DATA  *TbsData     : itype(_Ptr<RIOT_X509_TBS_DATA>),
     RIOT_ECC_PUBLIC     *DevIdKeyPub : itype(_Ptr<RIOT_ECC_PUBLIC>)
->>>>>>> Stashed changes
 )
 {
     uint8_t     encBuffer _Checked[65];
@@ -148,15 +142,11 @@ X509GetDeviceCertTBS(
     CHK(            DERAddOID(Tbs, prime256v1OID));
     CHK(        DERPopNesting(Tbs));
                 RiotCrypt_ExportEccPub(DevIdKeyPub, encBuffer, &encBufferLen);
-<<<<<<< Updated upstream
-    CHK(        DERAddBitString(Tbs, encBuffer, encBufferLen));
-=======
                 // encBufferLen will be set to (1 + 2*RIOT_ECC_COORD_BYTES), 
                 // which is 32, much less than the 65 encBuffer has
     CHK(        DERAddBitString(Tbs, 
                                 _Dynamic_bounds_cast<_Array_ptr<uint8_t>>(&encBuffer[0], byte_count((size_t)encBufferLen)), 
                                 encBufferLen));
->>>>>>> Stashed changes
     CHK(    DERPopNesting(Tbs));
     CHK(    DERStartExplicit(Tbs, 3));
     CHK(        DERStartSequenceOrSet(Tbs, true));
@@ -236,15 +226,9 @@ X509GetAliasCertTBS(
     uint32_t             FwidLen
 )
 {
-<<<<<<< Updated upstream
-    uint8_t     encBuffer[65];
-=======
-    uint8_t     encBuffer _Checked[65];
->>>>>>> Stashed changes
-    uint32_t    encBufferLen;
-
+    const uint32_t encBufferLen = 65;
+    uint8_t     encBuffer _Checked[encBufferLen];
     CHK(DERStartSequenceOrSet(Tbs, true));
-    CHK(    DERAddShortExplicitInteger(Tbs, 2));
     CHK(    DERAddIntegerFromArray(Tbs, TbsData->SerialNum, RIOT_X509_SNUM_LEN));
     CHK(    DERStartSequenceOrSet(Tbs, true));
     CHK(        DERAddOID(Tbs, ecdsaWithSHA256OID));
@@ -260,13 +244,13 @@ X509GetAliasCertTBS(
     CHK(            DERAddOID(Tbs, ecPublicKeyOID));
     CHK(            DERAddOID(Tbs, prime256v1OID));
     CHK(        DERPopNesting(Tbs));
-                RiotCrypt_ExportEccPub(AliasKeyPub, encBuffer, &encBufferLen);
+                RiotCrypt_ExportEccPub(AliasKeyPub, encBuffer, (_Ptr<uint32_t>)&encBufferLen);
                 // Again, encBufferLen is going to be smaller than the actual buffer
     CHK(        DERAddBitString(Tbs, 
                                 _Dynamic_bounds_cast<_Array_ptr<uint8_t>>(encBuffer, byte_count((size_t)encBufferLen)), 
                                 encBufferLen));
     CHK(    DERPopNesting(Tbs));
-            RiotCrypt_ExportEccPub(DevIdKeyPub, encBuffer, &encBufferLen);
+            RiotCrypt_ExportEccPub(DevIdKeyPub, encBuffer, (_Ptr<uint32_t>)&encBufferLen);
     CHK(    X509AddExtensions(Tbs, 
                               _Dynamic_bounds_cast<_Array_ptr<uint8_t>>(encBuffer, byte_count((size_t)encBufferLen)), 
                               encBufferLen, 

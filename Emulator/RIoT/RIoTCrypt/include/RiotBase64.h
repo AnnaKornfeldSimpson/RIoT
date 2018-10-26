@@ -4,6 +4,8 @@
 #ifndef RIOT_BASE64_H
 #define RIOT_BASE64_H
 
+#include <inttypes_checked.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif

@@ -19,10 +19,10 @@
 //
 #include "stdint.h"
 #include "stdbool.h"
-#include "RiotStatus.h"
-#include "RiotSha256.h"
-#include "RiotKdf.h"
-#include "RiotEcc.h"
+#include "../RiotStatus.h"
+#include "include/RiotSha256.h"
+#include "include/RiotKdf.h"
+#include "include/RiotEcc.h"
 
 #pragma CHECKED_SCOPE ON
 

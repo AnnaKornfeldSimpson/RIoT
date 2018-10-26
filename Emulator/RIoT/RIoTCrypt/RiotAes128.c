@@ -17,8 +17,8 @@
 //
 // 4-MAY-2015; RIoT adaptation (DennisMa;MSFT)
 //
-#include "RiotTarget.h"
-#include "RiotAes128.h"
+#include "include/RiotTarget.h"
+#include "include/RiotAes128.h"
 
 #define _AES_COMPILE_
 #include "RiotAesTables.c"
@@ -72,7 +72,10 @@ static void Pack32(_Array_ptr<uint32_t> u32 : byte_count(AES_BLOCK_SIZE),
 	               _Array_ptr<const uint8_t> u8 : byte_count(AES_BLOCK_SIZE))
 {
 #if HOST_IS_LITTLE_ENDIAN
-    memcpy(u32, u8, 16);
+    _Unchecked 
+    {
+        memcpy((void*)u32, (void*)u8, 16);
+    }
 #else
     int i;
     for (i = 0; i < 4; ++i, ++u32, u8 += 4) {
@@ -85,7 +88,10 @@ static void Unpack32(_Array_ptr<uint8_t> u8 : byte_count(16),
 	                 _Array_ptr<const uint32_t> u32 : byte_count(16))
 {
 #if HOST_IS_LITTLE_ENDIAN
-    memcpy(u8, u32, 16);
+    _Unchecked
+    {
+        memcpy((void*)u8, (void*)u32, 16);
+    }
 #else
     int i;
     for (i = 0; i < 4; ++i, ++u32) {

@@ -49,7 +49,7 @@
 //
 #include "stdint.h"
 #include "string_checked.h" // memcpy/memset
-#include "RiotSha256.h"
+#include "include/RiotSha256.h"
 
 #pragma CHECKED_SCOPE ON
 
@@ -171,7 +171,7 @@
 
 #ifdef SHA2_USE_MEMSET_MEMCPY
 #define MEMSET_BZERO(p,l)   memset((p), 0, (l))
-#define MEMCPY_BCOPY(d,s,l) memcpy((d), (s), (l))
+#define MEMCPY_BCOPY(t, d,s,l) memcpy<t>((d), (s), (l))
 #endif
 #ifdef SHA2_USE_BZERO_BCOPY
 #define MEMSET_BZERO(p,l)   bzero((p), (l))
@@ -256,7 +256,7 @@ void RIOT_SHA256_Init(RIOT_SHA256_CONTEXT *context : itype(_Ptr<RIOT_SHA256_CONT
         return;
     }
     context->magic = HASH_MAGIC_VALUE;
-    MEMCPY_BCOPY(context->state, sha256_initial_hash_value, SHA256_DIGEST_LENGTH);
+    MEMCPY_BCOPY(uint32_t, context->state, sha256_initial_hash_value, SHA256_DIGEST_LENGTH);
     MEMSET_BZERO(context->buffer, SHA256_BLOCK_LENGTH);
     context->bitcount = 0;
 }
@@ -369,7 +369,7 @@ void RIOT_SHA256_Update(RIOT_SHA256_CONTEXT *context : itype(_Ptr<RIOT_SHA256_CO
 				_Dynamic_bounds_cast<_Array_ptr<uint8_t>>(&context->buffer[usedspace], byte_count((size_t)freespace));
 			_Array_ptr<const sha2_uint8_t> tmpData: byte_count((size_t)freespace) = 
 				_Dynamic_bounds_cast<_Array_ptr<const sha2_uint8_t>>(data, byte_count((size_t)freespace));
-			MEMCPY_BCOPY(midBuffer, tmpData, freespace);
+			MEMCPY_BCOPY(uint8_t, midBuffer, tmpData, freespace);
             context->bitcount += freespace << 3;
             len -= freespace;
             data += freespace;
@@ -378,7 +378,7 @@ void RIOT_SHA256_Update(RIOT_SHA256_CONTEXT *context : itype(_Ptr<RIOT_SHA256_CO
             /* The buffer is not yet full */
 			_Array_ptr<uint8_t> midBuffer : byte_count(len) = 
 				_Dynamic_bounds_cast<_Array_ptr<uint8_t>>(&context->buffer[usedspace], byte_count(len));
-            MEMCPY_BCOPY(midBuffer, data, len);
+            MEMCPY_BCOPY(uint8_t, midBuffer, data, len);
             context->bitcount += len << 3;
             /* Clean up: */
             usedspace = freespace = 0;
@@ -398,7 +398,7 @@ void RIOT_SHA256_Update(RIOT_SHA256_CONTEXT *context : itype(_Ptr<RIOT_SHA256_CO
         /* There's left-overs, so save 'em */
 		// Since len no longer >= SHA256_BLOCK_LENGTH it definitely fits
 		_Array_ptr<uint8_t> beginBuffer : byte_count(len) = _Dynamic_bounds_cast<_Array_ptr<uint8_t>>(context->buffer, byte_count(len));
-		MEMCPY_BCOPY(beginBuffer, data, len);
+		MEMCPY_BCOPY(uint8_t, beginBuffer, data, len);
 		context->bitcount += len << 3;
     }
     /* Clean up: */

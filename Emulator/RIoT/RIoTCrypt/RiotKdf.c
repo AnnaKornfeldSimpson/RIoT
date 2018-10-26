@@ -18,7 +18,7 @@
 // 4-MAY-2015; RIoT adaptation (DennisMa;MSFT).
 //
 #include "stdint.h"
-#include "RiotKdf.h"
+#include "include/RiotKdf.h"
 
 #pragma CHECKED_SCOPE ON
 
@@ -61,16 +61,19 @@ size_t RIOT_KDF_FIXED(
     // This might be hard for the compiler to reason about, not just simple unsigned comparison
 
     if (label) {
-        memcpy(_Dynamic_bounds_cast<_Array_ptr<uint8_t>>(fixed, byte_count(labelSize)), label, labelSize);
+        memcpy<uint8_t>(_Dynamic_bounds_cast<_Array_ptr<uint8_t>>(fixed, byte_count(labelSize)), label, labelSize);
         fixed += labelSize;
     }
     *fixed++ = 0;
     if (context) {
-        memcpy(_Dynamic_bounds_cast<_Array_ptr<uint8_t>>(fixed, byte_count(contextSize)), context, contextSize);
+        memcpy<uint8_t>(_Dynamic_bounds_cast<_Array_ptr<uint8_t>>(fixed, byte_count(contextSize)), context, contextSize);
         fixed += contextSize;
     }
     numberOfBits = UINT32_TO_BIGENDIAN(numberOfBits);
-    memcpy(_Dynamic_bounds_cast<_Array_ptr<uint8_t>>(fixed, byte_count(4)), &numberOfBits, 4);
+    _Unchecked
+    {
+        memcpy((void*)fixed, &numberOfBits, 4);
+    }
     return total;
 }
 

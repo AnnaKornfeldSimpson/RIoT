@@ -4,7 +4,7 @@ Microsoft Copyright 2017
 Confidential Information
 
 */
-#include "RiotCrypt.h"
+#include "include/RiotCrypt.h"
 
 #pragma CHECKED_SCOPE ON
 
@@ -207,7 +207,7 @@ RiotCrypt_DeriveEccKey(
         pSrcVal = (_Ptr<bigval_t>)explicitlySizedSrcData;
     } else { // size is smaller than a bigval_t, so have to pass by bytes
 		_Array_ptr<uint8_t> tmp : byte_count(srcDataSize) = _Dynamic_bounds_cast<_Array_ptr<uint8_t>>(&srcVal, byte_count(srcDataSize));
-        memcpy(tmp, srcData, srcDataSize);
+        memcpy<uint8_t>(tmp, (_Array_ptr<uint8_t>)srcData, srcDataSize);
         pSrcVal = &srcVal;
     }
 

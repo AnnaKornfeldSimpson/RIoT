@@ -16,8 +16,8 @@ Confidential Information
     #include <arpa/inet_checked.h>
 #endif
 
-#include "RiotDerEnc.h"
-#include "RiotBase64.h"
+#include "include/RiotDerEnc.h"
+#include "include/RiotBase64.h"
 
 #pragma CHECKED_SCOPE ON
 
@@ -381,7 +381,7 @@ DERAddBitString(
 	// Another temp
 	_Array_ptr<uint8_t> bitStringInsertPoint : byte_count((size_t)BitStringNumBytes) = 
 		_Dynamic_bounds_cast<_Array_ptr<uint8_t>>(Context->Buffer + Context->Position, byte_count((size_t)BitStringNumBytes));
-    memcpy(bitStringInsertPoint, BitString, BitStringNumBytes);
+    memcpy<uint8_t>(bitStringInsertPoint, BitString, BitStringNumBytes);
     Context->Position += BitStringNumBytes;
     return 0;
 Error:
@@ -407,7 +407,7 @@ DERAddOctetString(
 	// TODO: Another temp
 	_Array_ptr<uint8_t> octetStringInsertPoint : byte_count((size_t)OctetStringLen) =
 		_Dynamic_bounds_cast<_Array_ptr<uint8_t>>(Context->Buffer + Context->Position, byte_count((size_t)OctetStringLen));
-    memcpy(octetStringInsertPoint, OctetString, OctetStringLen);
+    memcpy<uint8_t>(octetStringInsertPoint, OctetString, OctetStringLen);
     Context->Position += OctetStringLen;
     return 0;
 Error:
@@ -622,7 +622,7 @@ DERtoPEM(
 	// despite the expected and inferred bounds appearing identical on the screen
 	_Nt_array_ptr<const char> actualHeader : byte_count((size_t)PEMhf[Type].hLen) =
 		_Dynamic_bounds_cast<_Nt_array_ptr<char>>(PEMhf[Type].header, byte_count((size_t)PEMhf[Type].hLen));
-    memcpy(pemForHeader, actualHeader, (size_t)PEMhf[Type].hLen);
+    memcpy<char>(pemForHeader, actualHeader, (size_t)PEMhf[Type].hLen);
     PEM += PEMhf[Type].hLen;
     
     // Encode bytes
@@ -642,7 +642,7 @@ DERtoPEM(
 	// despite the expected and inferred bounds appearing identical on the screen
 	_Nt_array_ptr<const char> actualFooter : byte_count((size_t)PEMhf[Type].fLen) =
 		_Dynamic_bounds_cast<_Nt_array_ptr<char>>(PEMhf[Type].footer, byte_count((size_t)PEMhf[Type].fLen));
-    memcpy(pemForFooter, actualFooter, PEMhf[Type].fLen);
+    memcpy<char>(pemForFooter, actualFooter, PEMhf[Type].fLen);
     PEM += PEMhf[Type].fLen;
 
     // Output buffer length

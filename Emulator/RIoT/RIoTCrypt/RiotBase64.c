@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 #include <string_checked.h>
-#include "RiotBase64.h"
+#include "include/RiotBase64.h"
 
 #pragma CHECKED_SCOPE ON
 
